@@ -1,0 +1,155 @@
+{
+  "users": [
+    {
+      "name": "admin",
+      "password": "admin",
+      "tags": ["administrator"]
+    }
+  ],
+  "vhosts": [
+    {"name": "/"},
+    {"name": "evolution"}
+  ],
+  "permissions": [
+    {
+      "user": "admin",
+      "vhost": "/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "admin",
+      "vhost": "evolution",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    }
+  ],
+  "exchanges": [
+    {
+      "name": "events.direct",
+      "vhost": "/",
+      "type": "direct",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "notifications.direct",
+      "vhost": "/",
+      "type": "direct",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "events.topic",
+      "vhost": "/",
+      "type": "topic",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "logs.topic",
+      "vhost": "/",
+      "type": "topic",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
+      "name": "broadcast.fanout",
+      "vhost": "/",
+      "type": "fanout",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    }
+  ],
+  "queues": [
+    {
+      "name": "events.queue",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "notifications.queue",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "logs.error.queue",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "logs.info.queue",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "broadcast.queue",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    }
+  ],
+  "bindings": [
+    {
+      "source": "events.direct",
+      "vhost": "/",
+      "destination": "events.queue",
+      "destination_type": "queue",
+      "routing_key": "events",
+      "arguments": {}
+    },
+    {
+      "source": "notifications.direct",
+      "vhost": "/",
+      "destination": "notifications.queue",
+      "destination_type": "queue",
+      "routing_key": "notifications",
+      "arguments": {}
+    },
+    {
+      "source": "logs.topic",
+      "vhost": "/",
+      "destination": "logs.error.queue",
+      "destination_type": "queue",
+      "routing_key": "*.error",
+      "arguments": {}
+    },
+    {
+      "source": "logs.topic",
+      "vhost": "/",
+      "destination": "logs.info.queue",
+      "destination_type": "queue",
+      "routing_key": "*.info",
+      "arguments": {}
+    },
+    {
+      "source": "broadcast.fanout",
+      "vhost": "/",
+      "destination": "broadcast.queue",
+      "destination_type": "queue",
+      "routing_key": "",
+      "arguments": {}
+    }
+  ]
+}

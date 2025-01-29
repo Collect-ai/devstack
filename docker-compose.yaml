@@ -1,0 +1,92 @@
+version: '3.8'
+
+services:
+  api:
+    container_name: evolution_api
+    image: atendai/evolution-api:v2.2.0
+    restart: always
+    ports:
+      - 8080:8080
+    env_file:
+      - .env
+    expose:
+      - 8080
+    depends_on:
+      redis:
+        condition: service_healthy
+      pg:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"] 
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    volumes:
+      - ./evolution/instances:/evolution/instances
+      - ./evolution/store:/evolution/store      
+    networks:
+      - collect
+
+  redis:
+    image: "redis:7.4.0-alpine"
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping", "|", "grep", "PONG"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - collect
+
+  pg:
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_USER: lobo
+      POSTGRES_PASSWORD: frontal
+      POSTGRES_DB: evolution
+      POSTGRES_MULTIPLE_DATABASES: db1,db2,db3
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lobo -d evolution"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres/data:/var/lib/postgresql/data
+      - ./postgres/init:/docker-entrypoint-initdb.d
+    networks:
+      - collect
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq_management    
+    ports: 
+      - 25672:25672 # (erlang) communication between the nodes and CLI tool
+      - 15672:15672 # communication with the web management API  
+      - 5672:5672 # communication with the AMQP protocol        
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - ./rabbitmq/data:/var/lib/rabbitmq
+      - ./rabbitmq/config/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
+      - ./rabbitmq/config/definitions.json:/etc/rabbitmq/definitions.json:ro
+    networks:
+      - collect
+
+networks:
+  collect:

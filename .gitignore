@@ -1,0 +1,61 @@
+# Data directories
+**/data/
+evolution/instances/
+evolution/store/
+postgres/data/
+rabbitmq/data/
+
+# Docker
+.docker/
+docker-compose.override.yml
+docker-compose.override.yaml
+
+# IDE and Editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+logs/
+log/
+
+# Temporary files
+*.tmp
+*.temp
+.tmp/
+tmp/
+
+# Node modules (if using any Node.js services)
+node_modules/
+
+# Python (if using any Python services)
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.env/
+.venv/
+ENV/
+
+# Compiled files
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
