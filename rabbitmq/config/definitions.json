@@ -37,6 +37,15 @@
       "arguments": {}
     },
     {
+      "name": "teste",
+      "vhost": "evolution",
+      "type": "topic",
+      "durable": true,
+      "auto_delete": false,
+      "internal": false,
+      "arguments": {}
+    },
+    {
       "name": "notifications.direct",
       "vhost": "/",
       "type": "direct",
