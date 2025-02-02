@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.9'
 
 services:
   api:
@@ -34,6 +34,9 @@ services:
     image: "redis:7.4.0-alpine"
     ports:
       - "6379:6379"
+    volumes:
+      - ./redis/config/redis.conf:/usr/local/etc/redis/redis.conf
+    command: redis-server /usr/local/etc/redis/redis.conf
     healthcheck:
       test: ["CMD", "redis-cli", "ping", "|", "grep", "PONG"]
       interval: 10s
@@ -50,7 +53,7 @@ services:
       POSTGRES_USER: lobo
       POSTGRES_PASSWORD: frontal
       POSTGRES_DB: evolution
-      POSTGRES_MULTIPLE_DATABASES: db1,db2,db3
+      POSTGRES_MULTIPLE_DATABASES: cortexflow
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U lobo -d evolution"]
       interval: 10s
@@ -86,6 +89,17 @@ services:
       - ./rabbitmq/config/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
       - ./rabbitmq/config/enabled_plugins:/etc/rabbitmq/enabled_plugins:ro
       - ./rabbitmq/config/definitions.json:/etc/rabbitmq/definitions.json:ro
+    networks:
+      - collect
+
+  json-server:
+    image: clue/json-server:latest
+    container_name: json_server
+    ports:
+      - "3000:80"
+    volumes:
+      - ./json-server:/data
+    command: --watch /data/data.json
     networks:
       - collect
 
