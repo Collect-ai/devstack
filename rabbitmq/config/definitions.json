@@ -8,7 +8,9 @@
   ],
   "vhosts": [
     {"name": "/"},
-    {"name": "evolution"}
+    {"name": "evolution"},
+    {"name": "cortexflow"},
+    {"name": "neurotransmissor"}
   ],
   "permissions": [
     {
@@ -21,6 +23,20 @@
     {
       "user": "admin",
       "vhost": "evolution",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "admin",
+      "vhost": "neurotransmissor",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "admin",
+      "vhost": "cortexflow",
       "configure": ".*",
       "write": ".*",
       "read": ".*"
